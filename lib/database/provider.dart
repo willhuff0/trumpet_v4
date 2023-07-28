@@ -3,7 +3,9 @@ import 'db.dart';
 late final TUser loggedInUser;
 
 final List<TGroup> _ownedGroups = [];
-Future<List<TGroup>> getOwnedGroups() async {}
+Future<List<TGroup>> getOwnedGroups() async {
+  return [];
+}
 
 final List<TGroup> _joinedGroups = [];
 
