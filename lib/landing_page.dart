@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:uicons_brands/uicons_brands.dart';
 
+import 'firebase_options.dart';
+
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
 
@@ -37,6 +39,7 @@ class _LandingPageState extends State<LandingPage> {
                         setState(() => loading = true);
                         try {
                           final googleSignIn = GoogleSignIn(
+                            clientId: DefaultFirebaseOptions.currentPlatform.iosClientId,
                             scopes: [
                               'profile',
                               'email',
