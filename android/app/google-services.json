@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "214583841692",
+    "project_id": "announce-trumpet",
+    "storage_bucket": "announce-trumpet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214583841692:android:f0a0d07f2ceb8b5e38ae59",
+        "android_client_info": {
+          "package_name": "com.willhuffman.trumpet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "214583841692-i83fgrrvtvk3cjp310dka3h4fqr0n9ql.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.willhuffman.trumpet",
+            "certificate_hash": "c00659b84bbf895941a23f6e114c0cb031757fdc"
+          }
+        },
+        {
+          "client_id": "214583841692-oncebg9gotn8rj2rqattae88iar6i1k0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYodo1IYcsS5ZNaGe_9JsJYu-DUnWDuF0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "214583841692-1qo7f2s7ggrkm9hqr2c9j6e6i20voauh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "214583841692-2csg93mhvo4ffklcv3lqk5r39nujbrho.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.willhuffman.trumpet"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

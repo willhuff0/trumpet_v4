@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:trumpet/landing_page.dart';
 
+import 'firebase_options.dart';
 import 'tabs/events.dart';
 
 void main() {
@@ -34,6 +36,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late final StreamSubscription _authStateChangesSubscription;
+
   var loading = false;
   var loggedIn = false;
 
@@ -53,17 +57,39 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _initFirebase() async {
-    final app = await Firebase.initializeApp();
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     var loggedInUser = FirebaseAuth.instance.currentUser;
     if (loggedInUser == null) {
-      loading = false;
-      loggedIn = false;
+      setState(() {
+        loading = false;
+        loggedIn = false;
+      });
     } else {
       setState(() {
         loading = false;
         loggedIn = true;
       });
     }
+
+    _authStateChangesSubscription = FirebaseAuth.instance.authStateChanges().listen((loggedInUser) {
+      if (loggedInUser == null) {
+        setState(() {
+          loading = false;
+          loggedIn = false;
+        });
+      } else {
+        setState(() {
+          loading = false;
+          loggedIn = true;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _authStateChangesSubscription.cancel();
+    super.dispose();
   }
 
   @override
