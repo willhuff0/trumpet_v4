@@ -14,17 +14,17 @@ class TGroup {
   final Delta about;
 
   TGroup(this._reference, this._groupId, {required this.owner, required this.name, required this.about});
+  TGroup.fromSnapshot(DocumentSnapshot snapshot)
+      : _reference = snapshot.reference,
+        _groupId = snapshot.id,
+        owner = snapshot.get('owner'),
+        name = snapshot.get('name'),
+        about = Delta.fromJson(json.decode(snapshot.get('about')));
 
   static Future<TGroup> get(String group) async {
     final reference = FirebaseFirestore.instance.doc('groups/$group');
     final snapshot = await reference.get();
-    return TGroup(
-      reference,
-      group,
-      owner: snapshot.get('owner'),
-      name: snapshot.get('name'),
-      about: Delta.fromJson(json.decode(snapshot.get('about'))),
-    );
+    return TGroup.fromSnapshot(snapshot);
   }
 
   Future<void> save() async {

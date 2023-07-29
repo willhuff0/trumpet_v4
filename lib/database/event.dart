@@ -15,18 +15,18 @@ class TEvent {
   final Delta about;
 
   TEvent(this._reference, this._groupId, this._eventId, {required this.date, required this.name, required this.about});
+  TEvent.fromSnapshot(DocumentSnapshot snapshot)
+      : _reference = snapshot.reference,
+        _groupId = snapshot.reference.parent.id,
+        _eventId = snapshot.id,
+        date = (snapshot.get('date') as Timestamp).toDate(),
+        name = snapshot.get('name'),
+        about = Delta.fromJson(json.decode(snapshot.get('about') as String));
 
   static Future<TEvent> get(String group, String event) async {
     final reference = FirebaseFirestore.instance.doc('groups/$group/events/$event');
     final snapshot = await reference.get();
-    return TEvent(
-      reference,
-      group,
-      event,
-      date: (snapshot.get('date') as Timestamp).toDate(),
-      name: snapshot.get('name'),
-      about: Delta.fromJson(json.decode(snapshot.get('about') as String)),
-    );
+    return TEvent.fromSnapshot(snapshot);
   }
 
   Future<void> save() async {

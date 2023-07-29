@@ -4,10 +4,13 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:trumpet/database/db.dart';
 import 'package:trumpet/landing_page.dart';
 
 import 'firebase_options.dart';
-import 'tabs/events.dart';
+import 'tabs/events_page.dart';
+
+import 'database/provider.dart' as provider;
 
 void main() {
   runApp(const App());
@@ -43,11 +46,11 @@ class _HomePageState extends State<HomePage> {
 
   var _selectedIndex = 0;
 
-  final _pages = const [
-    EventsPage(),
-    EventsPage(),
-    EventsPage(),
-    EventsPage(),
+  final _pages = [
+    EventsPage(key: GlobalKey()),
+    EventsPage(key: GlobalKey()),
+    EventsPage(key: GlobalKey()),
+    EventsPage(key: GlobalKey()),
   ];
 
   @override
@@ -71,7 +74,7 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    _authStateChangesSubscription = FirebaseAuth.instance.authStateChanges().listen((loggedInUser) {
+    _authStateChangesSubscription = FirebaseAuth.instance.authStateChanges().listen((loggedInUser) async {
       if (loggedInUser == null) {
         setState(() {
           loading = false;
@@ -79,9 +82,13 @@ class _HomePageState extends State<HomePage> {
         });
       } else {
         setState(() {
-          loading = false;
+          loading = true;
           loggedIn = true;
         });
+
+        provider.loggedInUser = await TUser.getOrCreate(loggedInUser);
+
+        setState(() => loading = false);
       }
     });
   }
@@ -104,6 +111,7 @@ class _HomePageState extends State<HomePage> {
                   ),
             bottomNavigationBar: NavigationBar(
               selectedIndex: _selectedIndex,
+              onDestinationSelected: (index) => setState(() => _selectedIndex = index),
               destinations: const [
                 NavigationDestination(
                   icon: Icon(Icons.timeline),
