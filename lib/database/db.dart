@@ -5,3 +5,4 @@ export 'provider.dart';
 export 'event.dart';
 export 'user.dart';
 export 'group.dart';
+export 'join_code.dart';

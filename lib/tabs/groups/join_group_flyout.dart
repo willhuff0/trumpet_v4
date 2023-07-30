@@ -1,90 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
-import 'dart:io';
-import 'dart:isolate';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:trumpet/database/db.dart';
-import 'package:trumpet/database/join_code.dart';
-
-class GroupsPage extends StatefulWidget {
-  const GroupsPage({super.key});
-
-  @override
-  State<GroupsPage> createState() => _GroupsPageState();
-}
-
-class _GroupsPageState extends State<GroupsPage> {
-  late final Future<(Iterable<TGroup> iterable, int count)> _getJoinedGroupsFuture;
-
-  @override
-  void initState() {
-    _getJoinedGroupsFuture = loggedInUser.getJoinedGroups();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Groups'),
-        actions: [
-          MenuAnchor(
-            menuChildren: [
-              MenuItemButton(
-                leadingIcon: const Icon(Icons.group_add),
-                child: const Text('Create group'),
-                onPressed: () {},
-              ),
-            ],
-            builder: (context, controller, child) {
-              return IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  controller.open();
-                },
-              );
-            },
-          ),
-        ],
-      ),
-      body: FutureBuilder(
-        initialData: null,
-        future: _getJoinedGroupsFuture,
-        builder: (context, asyncSnapshot) {
-          if (asyncSnapshot.hasData) {
-            final (joinedGroups, count) = asyncSnapshot.data!;
-            if (count == 0) {
-              return const Center(child: Text('You haven\'t joined any groups yet'));
-            }
-            return ListView.builder(
-              itemCount: count,
-              itemBuilder: (context, index) {
-                final group = joinedGroups.elementAt(index);
-                return ListTile(
-                  title: Text(group.name),
-                );
-              },
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showModalBottomSheet(context: context, builder: (context) => JoinGroupFlyout(), isScrollControlled: true);
-        },
-        label: const Text('Join group'),
-        icon: const Icon(Icons.add),
-      ),
-    );
-  }
-}
 
 class JoinGroupFlyout extends StatefulWidget {
   const JoinGroupFlyout({super.key});
@@ -145,9 +64,9 @@ class _JoinGroupFlyoutState extends State<JoinGroupFlyout> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,
-      height: math.max(375, MediaQuery.viewInsetsOf(context).bottom + (_searched ? 190 : 110)),
+      height: math.max(350, MediaQuery.viewInsetsOf(context).bottom + (_searched ? 170 : 90)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 22.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -158,6 +77,8 @@ class _JoinGroupFlyoutState extends State<JoinGroupFlyout> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(14.0)),
                       filled: true,
+                      hintText: 'join-code',
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14.0),
                     ),
                     autocorrect: false,
                     autofillHints: null,
