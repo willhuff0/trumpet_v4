@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 import 'db.dart';
 
@@ -13,12 +12,17 @@ class TUser {
   final List<String> joinedGroups;
 
   TUser(this._reference, this._userId, {bool caching = false, required this.name, required this.ownedGroups, required this.joinedGroups}) : _caching = caching;
-  TUser.fromSnapshot(DocumentSnapshot snapshot)
-      : _reference = snapshot.reference,
-        _userId = snapshot.id,
-        name = snapshot.get('name'),
-        ownedGroups = snapshot.get('ownedGroups') ?? [],
-        joinedGroups = snapshot.get('joinedGroups') ?? [];
+
+  static TUser fromSnapshot(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+    return TUser(
+      snapshot.reference,
+      snapshot.id,
+      name: data['name'],
+      ownedGroups: data['ownedGroups'] ?? [],
+      joinedGroups: data['joinedGroups'] ?? [],
+    );
+  }
 
   var _caching = false;
 
@@ -59,23 +63,47 @@ class TUser {
 
   // Functions
 
-  Iterable<TGroup>? _ownedGroupsCache;
-  Future<Iterable<TGroup>>? _getOwnedGroupsCall;
+  (Iterable<TGroup> iterable, int count)? _ownedGroupsCache;
+  Future<(Iterable<TGroup> iterable, int count)>? _getOwnedGroupsCall;
 
   /// Results are cached on this instance only if caching is enabled.
   /// Multiple calls to this function will join and await the same single future.
-  Future<Iterable<TGroup>> getOwnedGroups() async {
+  Future<(Iterable<TGroup> iterable, int count)> getOwnedGroups() {
+    if (ownedGroups.isEmpty) return Future.value((<TGroup>[], 0));
+
     if (_getOwnedGroupsCall != null) return _getOwnedGroupsCall!;
     return _getOwnedGroupsCall = _getOwnedGroups();
   }
 
-  Future<Iterable<TGroup>> _getOwnedGroups() async {
+  Future<(Iterable<TGroup> iterable, int count)> _getOwnedGroups() async {
     if (_caching && _ownedGroupsCache != null) return _ownedGroupsCache!;
     final collection = FirebaseFirestore.instance.collection('groups');
     final query = collection.where(FieldPath.documentId, whereIn: ownedGroups);
     final snapshot = await query.get();
-    final result = snapshot.docs.map((snapshot) => TGroup.fromSnapshot(snapshot));
+    final result = (snapshot.docs.map((docSnapshot) => TGroup.fromSnapshot(docSnapshot)), snapshot.docs.length);
     if (_caching) _ownedGroupsCache = result;
+    return result;
+  }
+
+  (Iterable<TGroup> iterable, int count)? _joinedGroupsCache;
+  Future<(Iterable<TGroup> iterable, int count)>? _getJoinedGroupsCall;
+
+  /// Results are cached on this instance only if caching is enabled.
+  /// Multiple calls to this function will join and await the same single future.
+  Future<(Iterable<TGroup> iterable, int count)> getJoinedGroups() {
+    if (joinedGroups.isEmpty) return Future.value((<TGroup>[], 0));
+
+    if (_getJoinedGroupsCall != null) return _getJoinedGroupsCall!;
+    return _getJoinedGroupsCall = _getJoinedGroups();
+  }
+
+  Future<(Iterable<TGroup> iterable, int count)> _getJoinedGroups() async {
+    if (_caching && _joinedGroupsCache != null) return _joinedGroupsCache!;
+    final collection = FirebaseFirestore.instance.collection('groups');
+    final query = collection.where(FieldPath.documentId, whereIn: joinedGroups);
+    final snapshot = await query.get();
+    final result = (snapshot.docs.map((docSnapshot) => TGroup.fromSnapshot(docSnapshot)), snapshot.docs.length);
+    if (_caching) _joinedGroupsCache = result;
     return result;
   }
 
@@ -84,7 +112,7 @@ class TUser {
 
   /// Results are cached on this instance only if caching is enabled.
   /// Multiple calls to this function will join and await the same single future.
-  Future<(Iterable<TEvent> iterable, int count)> getUpcommingEvents() async {
+  Future<(Iterable<TEvent> iterable, int count)> getUpcommingEvents() {
     if (_getUpcommingEventsCall != null) return _getUpcommingEventsCall!;
     return _getUpcommingEventsCall = _getUpcommingEvents();
   }
@@ -94,7 +122,7 @@ class TUser {
     final collectionGroup = FirebaseFirestore.instance.collectionGroup('upcommingEvents');
     final query = collectionGroup.where('attending', arrayContains: _reference.id);
     final snapshot = await query.get();
-    final result = (snapshot.docs.map((snapshot) => TEvent.fromSnapshot(snapshot)), snapshot.docs.length);
+    final result = (snapshot.docs.map((docSnapshot) => TEvent.fromSnapshot(docSnapshot)), snapshot.docs.length);
     if (_caching) _upcommingEventsCache = result;
     return result;
   }

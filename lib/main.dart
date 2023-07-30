@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:trumpet/database/db.dart';
 import 'package:trumpet/landing_page.dart';
+import 'package:trumpet/tabs/groups_page.dart';
 
 import 'firebase_options.dart';
 import 'tabs/events_page.dart';
@@ -49,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   final _pages = [
     EventsPage(key: GlobalKey()),
     EventsPage(key: GlobalKey()),
-    EventsPage(key: GlobalKey()),
+    GroupsPage(key: GlobalKey()),
     EventsPage(key: GlobalKey()),
   ];
 
@@ -103,6 +104,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return loggedIn || loading
         ? Scaffold(
+            resizeToAvoidBottomInset: false,
             body: loading
                 ? const Center(child: CircularProgressIndicator())
                 : IndexedStack(

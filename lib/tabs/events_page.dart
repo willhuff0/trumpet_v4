@@ -32,6 +32,9 @@ class _EventsPageState extends State<EventsPage> {
         builder: (context, asyncSnapshot) {
           if (asyncSnapshot.hasData) {
             final (upcommingEvents, count) = asyncSnapshot.data!;
+            if (count == 0) {
+              return const Center(child: Text('No upcomming events'));
+            }
             return PageView.builder(
               scrollDirection: Axis.vertical,
               itemCount: count,
