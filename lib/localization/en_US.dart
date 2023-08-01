@@ -33,5 +33,8 @@ const Map<String, dynamic> en_US = {
   AppLocale.createGroup_IconBanner_Explanation: 'Simple and recognizable patterns help users quickly identify your group. Graphics are preferred over pictures. Use acronyms rather than text where possible.',
   AppLocale.createGroup_IconBanner_ErrorLoading: 'An error occured while trying to decode the image',
   //
+  AppLocale.createGroup_Done_Success: 'All done! Your group has been created.',
+  AppLocale.createGroup_Done_Error: 'An error occured while creating your group.',
+  //
   AppLocale.settingsPage_Title: 'Settings',
 };

@@ -37,5 +37,8 @@ mixin AppLocale {
   static const createGroup_IconBanner_Explanation = 'createGroup_IconBanner_Explanation';
   static const createGroup_IconBanner_ErrorLoading = 'createGroup_IconBanner_ErrorLoading';
 
+  static const createGroup_Done_Success = 'createGroup_Done_Success';
+  static const createGroup_Done_Error = 'createGroup_Done_Error';
+
   static const settingsPage_Title = 'settingsPage_Title';
 }

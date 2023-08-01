@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:trumpet/database/db.dart';
 import 'package:trumpet/localization.dart';
 
 part 'coast_0_name.dart';
 part 'coast_1_about.dart';
 part 'coast_2_iconBanner.dart';
+part 'coast_3_done.dart';
 
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({super.key});
@@ -37,6 +39,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     _coastController = CoastController();
 
     _keys = [
+      GlobalKey(),
       GlobalKey(),
       GlobalKey(),
       GlobalKey(),
@@ -85,6 +88,18 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           },
         ),
       ),
+      Beach(
+        builder: (context) => _DonePage(
+          key: _keys[3],
+          name: _name,
+          about: _about,
+          icon: _icon,
+          banner: _banner,
+          onComplete: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
     ];
 
     super.initState();
@@ -122,19 +137,21 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(AppLocale.createGroup_AppBar_Title.getString(context)),
         automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.close),
-          )
-        ],
+        actions: _index == _beaches.length - 1
+            ? null
+            : [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.close),
+                )
+              ],
       ),
       body: Column(
         children: [
           TweenAnimationBuilder(
-            tween: Tween<double>(begin: 0, end: _index / _beaches.length),
+            tween: Tween<double>(begin: 0, end: _index / (_beaches.length - 1)),
             duration: const Duration(milliseconds: 250),
             builder: (context, value, _) {
               return LinearProgressIndicator(value: value, minHeight: 6.0);

@@ -45,6 +45,11 @@ dependencies:
   coast: ^2.0.2
   image_picker: ^1.0.1
   flutter_localization: ^0.1.13
+  firebase_storage: ^11.2.5
+  image: ^4.0.17
+  path_provider: ^2.0.15
+  sqflite: ^2.3.0
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:

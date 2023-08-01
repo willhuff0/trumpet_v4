@@ -38,8 +38,9 @@ class _NamePageState extends State<_NamePage> {
     final valid = _formKey.currentState?.validate() ?? false;
     if (!valid) return;
     _formKey.currentState!.save();
-    widget.onSubmit(_name!);
     setState(() => _valid = false);
+    _focusNode.unfocus();
+    widget.onSubmit(_name!);
   }
 
   @override

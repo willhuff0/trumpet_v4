@@ -42,6 +42,7 @@ class __AboutPageState extends State<_AboutPage> {
       _valid = false;
       _backButtonOpacity = 0.0;
     });
+    _focusNode.unfocus();
     final valid = _formKey.currentState?.validate() ?? false;
     if (valid) {
       _formKey.currentState!.save();
@@ -56,6 +57,7 @@ class __AboutPageState extends State<_AboutPage> {
     if (!valid) return;
     _formKey.currentState!.save();
     setState(() => _valid = false);
+    _focusNode.unfocus();
     widget.onSubmit(_about);
   }
 

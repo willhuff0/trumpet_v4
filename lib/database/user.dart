@@ -3,24 +3,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'db.dart';
 
 class TUser {
-  final DocumentReference _reference;
-  final String _userId;
+  final DocumentReference reference;
+  final String userId;
 
   final String name;
 
   final List<String> ownedGroups;
   final List<String> joinedGroups;
 
-  TUser(this._reference, this._userId, {bool caching = false, required this.name, required this.ownedGroups, required this.joinedGroups}) : _caching = caching;
+  TUser._(this.reference, this.userId, {bool caching = false, required this.name, required this.ownedGroups, required this.joinedGroups}) : _caching = caching;
 
   static TUser fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
-    return TUser(
+    return TUser._(
       snapshot.reference,
       snapshot.id,
       name: data['name'],
-      ownedGroups: data['ownedGroups'] ?? [],
-      joinedGroups: data['joinedGroups'] ?? [],
+      ownedGroups: data['ownedGroups']?.cast<String>() ?? [],
+      joinedGroups: data['joinedGroups']?.cast<String>() ?? [],
     );
   }
 
@@ -38,7 +38,7 @@ class TUser {
     if (snapshot.exists) {
       return TUser.fromSnapshot(snapshot);
     } else {
-      final newUser = TUser(
+      final newUser = TUser._(
         reference,
         firebaseUser.uid,
         name: firebaseUser.displayName ?? 'Trumpet User',
@@ -51,7 +51,7 @@ class TUser {
   }
 
   Future<void> save() async {
-    await _reference.set({
+    await reference.set({
       'name': name,
       if (ownedGroups.isNotEmpty) 'ownedGroups': ownedGroups,
       if (joinedGroups.isNotEmpty) 'joinedGroups': joinedGroups,
@@ -120,7 +120,7 @@ class TUser {
   Future<(Iterable<TEvent> iterable, int count)> _getUpcommingEvents() async {
     if (_caching && _upcommingEventsCache != null) return _upcommingEventsCache!;
     final collectionGroup = FirebaseFirestore.instance.collectionGroup('upcommingEvents');
-    final query = collectionGroup.where('attending', arrayContains: _reference.id);
+    final query = collectionGroup.where('attending', arrayContains: reference.id);
     final snapshot = await query.get();
     final result = (snapshot.docs.map((docSnapshot) => TEvent.fromSnapshot(docSnapshot)), snapshot.docs.length);
     if (_caching) _upcommingEventsCache = result;
