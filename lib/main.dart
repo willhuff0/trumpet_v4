@@ -4,8 +4,10 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:trumpet/database/db.dart';
 import 'package:trumpet/landing_page.dart';
+import 'package:trumpet/localization.dart';
 import 'package:trumpet/tabs/groups/groups_page.dart';
 
 import 'firebase_options.dart';
@@ -17,12 +19,36 @@ void main() {
   runApp(const App());
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  @override
+  void initState() {
+    localization.init(
+      mapLocales: [
+        const MapLocale('en', en_US),
+      ],
+      initLanguageCode: 'en',
+    );
+    localization.onTranslatedLanguage = _onTranslatedLanguage;
+    super.initState();
+  }
+
+  void _onTranslatedLanguage(Locale? locale) {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      supportedLocales: localization.supportedLocales,
+      localizationsDelegates: localization.localizationsDelegates,
+      title: 'Trumpet',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
         useMaterial3: true,
@@ -114,22 +140,22 @@ class _HomePageState extends State<HomePage> {
             bottomNavigationBar: NavigationBar(
               selectedIndex: _selectedIndex,
               onDestinationSelected: (index) => setState(() => _selectedIndex = index),
-              destinations: const [
+              destinations: [
                 NavigationDestination(
-                  icon: Icon(Icons.timeline),
-                  label: 'Events',
+                  icon: const Icon(Icons.timeline),
+                  label: AppLocale.eventsPage_Title.getString(context),
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.calendar_month),
-                  label: 'Calendar',
+                  icon: const Icon(Icons.calendar_month),
+                  label: AppLocale.calendarPage_Title.getString(context),
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.groups),
-                  label: 'Groups',
+                  icon: const Icon(Icons.groups),
+                  label: AppLocale.groupsPage_Title.getString(context),
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.settings),
-                  label: 'Settings',
+                  icon: const Icon(Icons.settings),
+                  label: AppLocale.settingsPage_Title.getString(context),
                 ),
               ],
             ),

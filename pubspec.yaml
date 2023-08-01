@@ -42,6 +42,9 @@ dependencies:
   uicons_brands: ^1.0.0
   google_sign_in: ^6.1.4
   mobile_scanner: ^3.3.0
+  coast: ^2.0.2
+  image_picker: ^1.0.1
+  flutter_localization: ^0.1.13
 
 dev_dependencies:
   flutter_test:

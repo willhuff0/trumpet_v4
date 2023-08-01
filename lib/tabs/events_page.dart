@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:trumpet/database/db.dart';
 
 import 'package:flutter_quill/flutter_quill.dart' as fq;
+import 'package:trumpet/localization.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({super.key});
@@ -24,7 +26,7 @@ class _EventsPageState extends State<EventsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Events'),
+        title: Text(AppLocale.eventsPage_Title.getString(context)),
       ),
       body: FutureBuilder(
         initialData: null,
@@ -33,7 +35,11 @@ class _EventsPageState extends State<EventsPage> {
           if (asyncSnapshot.hasData) {
             final (upcommingEvents, count) = asyncSnapshot.data!;
             if (count == 0) {
-              return const Center(child: Text('No upcomming events'));
+              return Center(
+                child: Text(
+                  AppLocale.eventsPage_NoUpcomming.getString(context),
+                ),
+              );
             }
             return PageView.builder(
               scrollDirection: Axis.vertical,

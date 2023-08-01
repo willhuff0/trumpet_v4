@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:trumpet/database/db.dart';
-import 'package:trumpet/tabs/groups/create_group_page.dart';
+import 'package:trumpet/localization.dart';
+import 'package:trumpet/tabs/groups/create_group/create_group_page.dart';
 
 import 'join_group_flyout.dart';
 
@@ -28,13 +30,13 @@ class _GroupsPageState extends State<GroupsPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Groups'),
+        title: Text(AppLocale.groupsPage_Title.getString(context)),
         actions: [
           MenuAnchor(
             menuChildren: [
               MenuItemButton(
                 leadingIcon: const Icon(Icons.group_add),
-                child: const Text('Create group'),
+                child: Text(AppLocale.groupsPage_CreateGroupButtonLabel.getString(context)),
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateGroupPage()));
                 },
@@ -58,7 +60,9 @@ class _GroupsPageState extends State<GroupsPage> {
           if (asyncSnapshot.hasData) {
             final (joinedGroups, count) = asyncSnapshot.data!;
             if (count == 0) {
-              return const Center(child: Text('You haven\'t joined any groups yet'));
+              return Center(
+                child: Text(AppLocale.groupsPage_NoJoinedGroups.getString(context)),
+              );
             }
             return ListView.builder(
               itemCount: count,
@@ -70,7 +74,9 @@ class _GroupsPageState extends State<GroupsPage> {
               },
             );
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
         },
       ),
@@ -82,7 +88,7 @@ class _GroupsPageState extends State<GroupsPage> {
             isScrollControlled: true,
           );
         },
-        label: const Text('Join group'),
+        label: Text(AppLocale.groupsPage_JoinGroupButtonLabel.getString(context)),
         icon: const Icon(Icons.add),
       ),
     );

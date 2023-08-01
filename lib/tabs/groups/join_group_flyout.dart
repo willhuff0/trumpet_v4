@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:trumpet/database/db.dart';
+import 'package:trumpet/localization.dart';
 
 class JoinGroupFlyout extends StatefulWidget {
   const JoinGroupFlyout({super.key});
@@ -104,10 +106,10 @@ class _JoinGroupFlyoutState extends State<JoinGroupFlyout> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14.0),
                   child: Row(
                     children: [
-                      Expanded(child: Text(_result?.groupName ?? 'Invalid code')),
+                      Expanded(child: Text(_result?.groupName ?? AppLocale.joinGroup_InvalidCode.getString(context))),
                       FilledButton(
                         onPressed: _result == null ? null : () {},
-                        child: const Text('Join'),
+                        child: Text(AppLocale.joinGroup_JoinButtonLabel.getString(context)),
                       ),
                     ],
                   ),
@@ -128,8 +130,25 @@ class JoinGroupQRCodePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(AppLocale.joinGroup_ScanQRCode.getString(context)),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.close),
+          ),
+        ],
+      ),
+      body: const Center(
+        child: Text('Not yet implemented'),
+      ),
+    );
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         automaticallyImplyLeading: false,
-        title: const Text('Scan QR Code'),
+        title: Text(AppLocale.joinGroup_ScanQRCode.getString(context)),
         actions: [
           IconButton(
             onPressed: () {
