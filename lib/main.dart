@@ -74,9 +74,9 @@ class _HomePageState extends State<HomePage> {
 
   final _pages = [
     EventsPage(key: GlobalKey()),
-    EventsPage(key: GlobalKey()),
+    Container(key: GlobalKey()),
     GroupsPage(key: GlobalKey()),
-    EventsPage(key: GlobalKey()),
+    Container(key: GlobalKey()),
   ];
 
   @override

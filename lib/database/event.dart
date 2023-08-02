@@ -10,18 +10,38 @@ class TEvent {
   final String _eventId;
 
   final DateTime date;
+  final GeoPoint? location;
 
   final String name;
   final Delta about;
 
-  TEvent(this._reference, this._groupId, this._eventId, {required this.date, required this.name, required this.about});
-  TEvent.fromSnapshot(DocumentSnapshot snapshot)
-      : _reference = snapshot.reference,
-        _groupId = snapshot.reference.parent.id,
-        _eventId = snapshot.id,
-        date = (snapshot.get('date') as Timestamp).toDate(),
-        name = snapshot.get('name'),
-        about = Delta.fromJson(json.decode(snapshot.get('about') as String));
+  final List<String> attending;
+
+  TEvent(this._reference, this._groupId, this._eventId, {required this.date, required this.location, required this.name, required this.about, required this.attending});
+
+  static TEvent fromSnapshot(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    var aboutJson = data['about'];
+    Delta about;
+    if (aboutJson == null) {
+      about = Delta()..push(Operation.insert('\n'));
+    } else {
+      about = Delta.fromJson(aboutJson);
+      if (about.isEmpty) about.push(Operation.insert('\n'));
+    }
+
+    return TEvent(
+      snapshot.reference,
+      snapshot.reference.id,
+      snapshot.reference.parent.parent!.id,
+      date: (data['date'] as Timestamp).toDate(),
+      location: data['location'],
+      name: data['name'],
+      about: about,
+      attending: data['attending']?.cast<String>() ?? [],
+    );
+  }
 
   static Future<TEvent> get(String group, String event) async {
     final reference = FirebaseFirestore.instance.doc('groups/$group/events/$event');
@@ -32,8 +52,10 @@ class TEvent {
   Future<void> save() async {
     await _reference.set({
       'date': Timestamp.fromDate(date),
+      if (location != null) 'location': location,
       'name': name,
-      'about': json.encode(about.toJson()),
+      if (about.isNotEmpty) 'about': about.toJson(),
+      'attending': attending,
     });
   }
 }

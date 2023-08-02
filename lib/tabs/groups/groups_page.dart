@@ -4,6 +4,7 @@ import 'package:trumpet/database/db.dart';
 import 'package:trumpet/firebase_image/firebase_image.dart';
 import 'package:trumpet/localization.dart';
 import 'package:trumpet/tabs/groups/create_group/create_group_page.dart';
+import 'package:trumpet/tabs/groups/group_page.dart';
 
 import 'join_group_flyout.dart';
 
@@ -70,10 +71,10 @@ class _GroupsPageState extends State<GroupsPage> {
             )
           : CustomScrollView(
               slivers: [
-                if (_ownedGroups != null) ...[
+                if (_ownedGroups != null && _ownedGroups!.$1.isNotEmpty) ...[
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(14.0),
                       child: Text('Owned groups', style: Theme.of(context).textTheme.labelMedium),
                     ),
                   ),
@@ -82,20 +83,28 @@ class _GroupsPageState extends State<GroupsPage> {
                     itemBuilder: (context, index) {
                       final group = _ownedGroups!.$1.elementAt(index);
                       return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 14.0),
                         child: Card(
                           shadowColor: Colors.transparent,
                           child: SizedBox(
-                            height: 60.0,
-                            child: Padding(
-                              padding: const EdgeInsets.all(14.0),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                      //backgroundImage: FirebaseImage(''),
-                                      ),
-                                  Text(group.name),
-                                ],
+                            height: 80.0,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return GroupPage(group: group);
+                                }));
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(14.0),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                        //backgroundImage: FirebaseImage(''),
+                                        ),
+                                    const SizedBox(width: 8.0),
+                                    Text(group.name),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -105,15 +114,15 @@ class _GroupsPageState extends State<GroupsPage> {
                   ),
                   const SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.only(left: 14.0, right: 14.0, top: 8.0),
                       child: Divider(),
                     ),
                   ),
                 ],
-                if (_joinedGroups != null && !_loading) ...[
+                if (_joinedGroups != null && _joinedGroups!.$1.isNotEmpty && !_loading) ...[
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(14.0),
                       child: Text('Joined groups', style: Theme.of(context).textTheme.labelMedium),
                     ),
                   ),

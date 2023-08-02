@@ -44,9 +44,24 @@ class _EventsPageState extends State<EventsPage> {
             return PageView.builder(
               scrollDirection: Axis.vertical,
               itemCount: count,
+              padEnds: true,
               itemBuilder: (context, index) {
                 final event = upcommingEvents.elementAt(index);
-                return EventsPageEventView(event: event);
+                return Stack(
+                  children: [
+                    EventsPageEventView(event: event),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                        ),
+                      ),
+                    )
+                  ],
+                );
               },
             );
           } else {
@@ -89,10 +104,20 @@ class _EventsPageEventViewState extends State<EventsPageEventView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(widget.event.name, style: Theme.of(context).textTheme.titleLarge),
+        Padding(
+          padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0),
+          child: Text(widget.event.name, style: Theme.of(context).textTheme.titleLarge),
+        ),
         Expanded(
-          child: fq.QuillEditor.basic(
+          child: fq.QuillEditor(
             controller: _quillController,
+            scrollController: ScrollController(),
+            scrollable: true,
+            focusNode: FocusNode(),
+            showCursor: false,
+            expands: false,
+            padding: const EdgeInsets.all(24.0),
+            autoFocus: false,
             readOnly: true,
           ),
         ),

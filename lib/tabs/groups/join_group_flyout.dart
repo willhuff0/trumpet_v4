@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:trumpet/database/db.dart';
 import 'package:trumpet/localization.dart';
@@ -91,7 +90,7 @@ class _JoinGroupFlyoutState extends State<JoinGroupFlyout> {
                 const SizedBox(width: 14.0),
                 IconButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const JoinGroupQRCodePage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const JoinGroupQRCodePage(), fullscreenDialog: true));
                   },
                   icon: const Icon(Icons.qr_code),
                 ),
@@ -131,6 +130,7 @@ class JoinGroupQRCodePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(AppLocale.joinGroup_ScanQRCode.getString(context)),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: () {

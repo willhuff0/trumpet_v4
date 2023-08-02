@@ -2,6 +2,8 @@
 
 import 'package:flutter_localization/flutter_localization.dart';
 
+export 'package:flutter_localization/flutter_localization.dart';
+
 export 'localization/en_US.dart';
 
 final localization = FlutterLocalization.instance;

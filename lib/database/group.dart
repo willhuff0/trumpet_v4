@@ -13,9 +13,12 @@ class TGroup {
   final String name;
   final String about;
 
-  TGroup._(this._reference, this._groupId, {required this.owner, required this.name, required this.about});
+  final bool hasIcon;
+  final bool hasBanner;
 
-  static TGroup fromSnapshot(DocumentSnapshot snapshot) {
+  TGroup._(this._reference, this._groupId, {bool caching = false, required this.owner, required this.name, required this.about, required this.hasIcon, required this.hasBanner}) : _caching = caching;
+
+  static TGroup fromSnapshot(DocumentSnapshot snapshot, {bool caching = false}) {
     final data = snapshot.data() as Map<String, dynamic>;
     return TGroup._(
       snapshot.reference,
@@ -23,11 +26,15 @@ class TGroup {
       owner: data['owner'],
       name: data['name'],
       about: data['about'],
+      hasIcon: data['hasIcon'] ?? false,
+      hasBanner: data['hasBanner'] ?? false,
       //about: Delta.fromJson(json.decode(data['about'])),
     );
   }
 
-  static Future<TGroup> get(String group) async {
+  var _caching = false;
+
+  static Future<TGroup> get(String group, {bool caching = false}) async {
     final reference = FirebaseFirestore.instance.doc('groups/$group');
     final snapshot = await reference.get();
     return TGroup.fromSnapshot(snapshot);
@@ -41,6 +48,8 @@ class TGroup {
       owner: loggedInUser.userId,
       name: name,
       about: about,
+      hasIcon: false,
+      hasBanner: false,
     );
 
     final success = await FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -57,6 +66,27 @@ class TGroup {
 
     return success ? group : null;
   }
+
+  Map<String, dynamic> toMap() => {
+        'owner': owner,
+        'name': name,
+        'about': about,
+        if (hasIcon) 'hasIcon': hasIcon,
+        if (hasBanner) 'hasBanner': hasBanner,
+        //'about': json.encode(about.toJson()),
+      };
+
+  Future<void> save() async {
+    await _reference.set(toMap());
+  }
+
+  void enableCaching() => _caching = true;
+  void disableCaching() => _caching = false;
+
+  String get iconRefUrl => 'gs://announce-trumpet.appspot.com/$_groupId/icon.jpg';
+  String get bannerRefUrl => 'gs://announce-trumpet.appspot.com/$_groupId/banner.jpg';
+
+  // Functions
 
   Future<bool> uploadIcon(Uint8List data) async {
     final ref = FirebaseStorage.instance.ref('groups/$_groupId/icon.jpg');
@@ -103,15 +133,24 @@ class TGroup {
     }
   }
 
-  Map<String, dynamic> toMap() => {
-        'owner': owner,
-        'name': name,
-        'about': about,
-        //'about': json.encode(about.toJson()),
-      };
+  (Iterable<TEvent> iterable, int count)? _upcommingEventsCache;
+  Future<(Iterable<TEvent> iterable, int count)>? _getUpcommingEventsCall;
 
-  Future<void> save() async {
-    await _reference.set(toMap());
+  /// Results are cached on this instance only if caching is enabled.
+  /// Multiple calls to this function will join and await the same single future.
+  Future<(Iterable<TEvent> iterable, int count)> getUpcommingEvents() {
+    if (_getUpcommingEventsCall != null) return _getUpcommingEventsCall!;
+    return _getUpcommingEventsCall = _getUpcommingEvents();
+  }
+
+  Future<(Iterable<TEvent> iterable, int count)> _getUpcommingEvents({String? userId}) async {
+    if (_caching && _upcommingEventsCache != null) return _upcommingEventsCache!;
+    final collection = _reference.collection('upcommingEvents');
+    final query = userId == null ? collection : collection.where('attending', arrayContains: userId);
+    final snapshot = await query.get();
+    final result = (snapshot.docs.map((docSnapshot) => TEvent.fromSnapshot(docSnapshot)), snapshot.docs.length);
+    if (_caching) _upcommingEventsCache = result;
+    return result;
   }
 }
 

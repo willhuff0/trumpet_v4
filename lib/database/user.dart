@@ -13,11 +13,12 @@ class TUser {
 
   TUser._(this.reference, this.userId, {bool caching = false, required this.name, required this.ownedGroups, required this.joinedGroups}) : _caching = caching;
 
-  static TUser fromSnapshot(DocumentSnapshot snapshot) {
+  static TUser fromSnapshot(DocumentSnapshot snapshot, {bool caching = false}) {
     final data = snapshot.data() as Map<String, dynamic>;
     return TUser._(
       snapshot.reference,
       snapshot.id,
+      caching: caching,
       name: data['name'],
       ownedGroups: data['ownedGroups']?.cast<String>() ?? [],
       joinedGroups: data['joinedGroups']?.cast<String>() ?? [],
@@ -29,18 +30,19 @@ class TUser {
   static Future<TUser> get(String user, {bool caching = false}) async {
     final reference = FirebaseFirestore.instance.doc('users/$user');
     final snapshot = await reference.get();
-    return TUser.fromSnapshot(snapshot);
+    return TUser.fromSnapshot(snapshot, caching: caching);
   }
 
   static Future<TUser> getOrCreate(User firebaseUser, {bool caching = false}) async {
     final reference = FirebaseFirestore.instance.doc('users/${firebaseUser.uid}');
     final snapshot = await reference.get();
     if (snapshot.exists) {
-      return TUser.fromSnapshot(snapshot);
+      return TUser.fromSnapshot(snapshot, caching: caching);
     } else {
       final newUser = TUser._(
         reference,
         firebaseUser.uid,
+        caching: caching,
         name: firebaseUser.displayName ?? 'Trumpet User',
         ownedGroups: [],
         joinedGroups: [],
