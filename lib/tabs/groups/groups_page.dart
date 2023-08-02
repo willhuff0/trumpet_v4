@@ -5,6 +5,7 @@ import 'package:trumpet/firebase_image/firebase_image.dart';
 import 'package:trumpet/localization.dart';
 import 'package:trumpet/tabs/groups/create_group/create_group_page.dart';
 import 'package:trumpet/tabs/groups/group_page.dart';
+import 'package:trumpet/widgets.dart';
 
 import 'join_group_flyout.dart';
 
@@ -87,7 +88,7 @@ class _GroupsPageState extends State<GroupsPage> {
                         child: Card(
                           shadowColor: Colors.transparent,
                           child: SizedBox(
-                            height: 80.0,
+                            height: 74.0,
                             child: InkWell(
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -95,13 +96,11 @@ class _GroupsPageState extends State<GroupsPage> {
                                 }));
                               },
                               child: Padding(
-                                padding: const EdgeInsets.all(14.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 14.0),
                                 child: Row(
                                   children: [
-                                    CircleAvatar(
-                                        //backgroundImage: FirebaseImage(''),
-                                        ),
-                                    const SizedBox(width: 8.0),
+                                    GroupIconCircle(group: group),
+                                    const SizedBox(width: 10.0),
                                     Text(group.name),
                                   ],
                                 ),

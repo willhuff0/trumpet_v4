@@ -1,5 +1,6 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:image/image.dart';
 
 import 'db.dart';
@@ -85,6 +86,8 @@ class TGroup {
 
   String get iconRefUrl => 'gs://announce-trumpet.appspot.com/$_groupId/icon.jpg';
   String get bannerRefUrl => 'gs://announce-trumpet.appspot.com/$_groupId/banner.jpg';
+
+  String get initials => name.split(' ').take(2).map((e) => e.characters.first.toUpperCase()).join();
 
   // Functions
 
