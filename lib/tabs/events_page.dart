@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:trumpet/database/db.dart';
 
-import 'package:flutter_quill/flutter_quill.dart' as fq;
+import 'package:flutter_quill/flutter_quill.dart' as fq hide Text;
 import 'package:trumpet/localization.dart';
 
 class EventsPage extends StatefulWidget {

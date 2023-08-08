@@ -97,95 +97,59 @@ class _UpcommingEventsPanelState extends State<UpcommingEventsPanel> {
       ),
       padding: const EdgeInsets.all(8.0),
       clipBehavior: Clip.hardEdge,
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 3300),
-        curve: Curves.easeInOutCubic,
-        alignment: Alignment.topCenter,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-              child: Text('Events', style: Theme.of(context).textTheme.labelLarge),
-            ),
-            AnimatedSwitcher(
-              layoutBuilder: (currentChild, previousChildren) {
-                if (previousChildren.isEmpty) return currentChild!;
-
-                final height = (_loadedColumnKey.currentContext?.findRenderObject() as RenderBox?)?.size.height;
-                if (height == null) {
-                  return Stack(
-                    children: [
-                      currentChild!,
-                      ...previousChildren,
-                    ],
-                  );
-                } else {
-                  return SizedBox(
-                    height: height,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        currentChild!,
-                        LoadingPlaceholder(key: _loadingColumnKey, allowOverflow: true),
-                      ],
-                    ),
-                  );
-                }
-              },
-              //switchInCurve: Curves.easeInOutCubicEmphasized,
-              //switchOutCurve: Curves.easeInOutCubicEmphasized,
-              duration: Duration(milliseconds: 6300),
-              child: _loading || _upcommingEvents == null
-                  ? LoadingPlaceholder(key: _loadingColumnKey, allowOverflow: false)
-                  : Column(
-                      key: _loadedColumnKey,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: _upcommingEvents!.$1.map((event) {
-                        return Card(
-                          clipBehavior: Clip.hardEdge,
-                          child: SizedBox(
-                            height: 100.0,
-                            child: InkWell(
-                              onTap: () {},
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+            child: Text('Events', style: Theme.of(context).textTheme.labelLarge),
+          ),
+          _loading || _upcommingEvents == null
+              ? LoadingPlaceholder(key: _loadingColumnKey, allowOverflow: false)
+              : Column(
+                  key: _loadedColumnKey,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: _upcommingEvents!.$1.map((event) {
+                    return Card(
+                      clipBehavior: Clip.hardEdge,
+                      child: SizedBox(
+                        height: 100.0,
+                        child: InkWell(
+                          onTap: () {},
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 2.0),
+                                  child: Text(event.name, style: Theme.of(context).textTheme.titleMedium),
+                                ),
+                                Row(
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 2.0),
-                                      child: Text(event.name, style: Theme.of(context).textTheme.titleMedium),
-                                    ),
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.timer_outlined, size: 20.0),
-                                        const SizedBox(width: 6.0),
-                                        Text(DateFormat('MMM d, h:mm').format(event.date)),
-                                      ],
-                                    ),
-                                    if (event.location != null)
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.location_on_outlined, size: 20.0),
-                                          const SizedBox(width: 6.0),
-                                          Text('${event.location!.latitude}, ${event.location!.longitude}'),
-                                        ],
-                                      ),
+                                    const Icon(Icons.timer_outlined, size: 20.0),
+                                    const SizedBox(width: 6.0),
+                                    Text(DateFormat('MMM d, h:mm').format(event.date)),
                                   ],
                                 ),
-                              ),
+                                if (event.location != null)
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.location_on_outlined, size: 20.0),
+                                      const SizedBox(width: 6.0),
+                                      Text('${event.location!.latitude}, ${event.location!.longitude}'),
+                                    ],
+                                  ),
+                              ],
                             ),
                           ),
-                        );
-                      }).toList(),
-                    ),
-            ),
-          ],
-        ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+        ],
       ),
     );
   }

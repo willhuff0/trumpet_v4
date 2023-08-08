@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:trumpet/database/db.dart';
 import 'package:trumpet/localization.dart';
 
@@ -144,52 +143,52 @@ class JoinGroupQRCodePage extends StatelessWidget {
         child: Text('Not yet implemented'),
       ),
     );
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        automaticallyImplyLeading: false,
-        title: Text(AppLocale.joinGroup_ScanQRCode.getString(context)),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.close),
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          MobileScanner(
-            controller: MobileScannerController(
-              detectionSpeed: DetectionSpeed.normal,
-              facing: CameraFacing.back,
-              torchEnabled: false,
-              formats: [BarcodeFormat.qrCode],
-            ),
-            onDetect: (capture) {
-              //Navigator.pop(context);
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  content: Text(capture.raw.toString()),
-                ),
-              );
-            },
-          ),
-          ClipRRect(child: Container(color: Colors.black.withOpacity(0.4))),
-        ],
-      ),
-    );
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+    //     automaticallyImplyLeading: false,
+    //     title: Text(AppLocale.joinGroup_ScanQRCode.getString(context)),
+    //     actions: [
+    //       IconButton(
+    //         onPressed: () {
+    //           Navigator.pop(context);
+    //         },
+    //         icon: const Icon(Icons.close),
+    //       ),
+    //     ],
+    //   ),
+    //   body: Stack(
+    //     children: [
+    //       MobileScanner(
+    //         controller: MobileScannerController(
+    //           detectionSpeed: DetectionSpeed.normal,
+    //           facing: CameraFacing.back,
+    //           torchEnabled: false,
+    //           formats: [BarcodeFormat.qrCode],
+    //         ),
+    //         onDetect: (capture) {
+    //           //Navigator.pop(context);
+    //           showDialog(
+    //             context: context,
+    //             builder: (context) => AlertDialog(
+    //               content: Text(capture.raw.toString()),
+    //             ),
+    //           );
+    //         },
+    //       ),
+    //       ClipRRect(child: Container(color: Colors.black.withOpacity(0.4))),
+    //     ],
+    //   ),
+    // );
   }
 }
 
 class InvertedCircleClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    return new Path()
-      ..addOval(new Rect.fromCircle(center: new Offset(size.width / 2, size.height / 2), radius: size.width * 0.45))
-      ..addRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height))
+    return Path()
+      ..addOval(Rect.fromCircle(center: Offset(size.width / 2, size.height / 2), radius: size.width * 0.45))
+      ..addRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height))
       ..fillType = PathFillType.evenOdd;
   }
 

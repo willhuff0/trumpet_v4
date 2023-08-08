@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localization/flutter_localization.dart';
 import 'package:trumpet/database/db.dart';
-import 'package:trumpet/firebase_image/firebase_image.dart';
 import 'package:trumpet/localization.dart';
 import 'package:trumpet/tabs/groups/create_group/create_group_page.dart';
 import 'package:trumpet/tabs/groups/group_page.dart';
